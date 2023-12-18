@@ -31,12 +31,25 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "stm32g4xx_hal.h"
+#include "Service_Devices.h"
+#include "Service_Communication.h"
+#include "System_Config.h"
+#include "System_DataPool.h"
 
+#include <cstdint>
+#include <string.h>
+#include <BSP.h>
+#include <stdio.h>
+#include "tim.h"
+#include "gpio.h"
+#include "math.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-
+#define M_PI 3.14159
+#define ang2rad(angle) ((double)(angle) / 180.0 *M_PI) 
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
@@ -53,6 +66,22 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
+#pragma pack(1)
+typedef struct
+{
+	uint8_t head;
+	int start_cmd;
+	int grip_cmd;
+	//int
+	uint8_t end;
+}PackToPC_Def;
+#pragma pack()
+
+typedef union
+{
+	uint8_t UsartData[10];
+	PackToPC_Def PackToPC;
+}PackToPCUnionDef;
 
 /* USER CODE END EFP */
 
@@ -79,10 +108,14 @@ void Error_Handler(void);
 #define M8_GPIO_Port GPIOA
 #define M3_Pin GPIO_PIN_10
 #define M3_GPIO_Port GPIOA
+#define key_start_Pin GPIO_PIN_15
+#define key_start_GPIO_Port GPIOA
 #define M5_Pin GPIO_PIN_5
 #define M5_GPIO_Port GPIOB
 #define RX1_Pin GPIO_PIN_7
 #define RX1_GPIO_Port GPIOB
+#define key_grip_Pin GPIO_PIN_9
+#define key_grip_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 void pulse_1(int force, int theta);

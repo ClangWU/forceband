@@ -21,17 +21,9 @@
   *
  */
 /* Includes ------------------------------------------------------------------*/
-#include "System_Config.h"
-#include "System_DataPool.h"
-#include <stdio.h>
-#include <string.h>
-/* Service */
-#include "adc.h"
-#include "Service_Devices.h"
-//#include "Service_Debug.h"
-#include "Service_Communication.h"
+#include "main.h"
+#include "tim.h"
 /* User support package & SRML */
-#include <BSP.h>
 //#include "SEGGER_SYSVIEW.h"
 /* Private variables ---------------------------------------------------------*/
 
@@ -43,20 +35,23 @@
 void System_Resource_Init(void)
 {
   /* Drivers Init ---------------------*/
-	Uart_Init(&huart1, Uart1_Rx_Buff, USART1_RX_BUFFER_SIZE, User_UART1_RxCpltCallback);
+//	Uart_Init(&huart1, Uart1_Rx_Buff, USART1_RX_BUFFER_SIZE, User_UART1_RxCpltCallback);
+//	Uart_Init(&huart2, Uart2_Rx_Buff, USART2_RX_BUFFER_SIZE, User_UART2_RxCpltCallback);
 
   /* RTOS resources Init --------------*/
 	//Receive Force Sensor Data
 	USART_RxPort       = xQueueCreate(2,sizeof(USART_COB));
-	ADC_QueueHandle    = xQueueCreate(2,sizeof(USART_COB));
   /* Other resources Init -------------*/
 	//Vibra Motor
-	//HAL_TIM_PWM_Start(&htim2,TIM_CHANNEL_2);
-	HAL_TIM_PWM_Start(&htim4,TIM_CHANNEL_1);
-	HAL_TIM_PWM_Start(&htim4,TIM_CHANNEL_2);
-	
-	HAL_ADCEx_Calibration_Start(&hadc1); 
-	HAL_ADC_Start(&hadc1);
+	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_3);
+	HAL_TIM_PWM_Start(&htim3,TIM_CHANNEL_3);
+	HAL_TIM_PWM_Start(&htim3,TIM_CHANNEL_4);
+	HAL_TIM_PWM_Start(&htim2,TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start(&htim3,TIM_CHANNEL_2);
+	HAL_TIM_PWM_Start(&htim15,TIM_CHANNEL_2);
+	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_2);
+
   /* Modules Init ---------------------*/
   /* Service configurations -----------*/
   
@@ -70,7 +65,8 @@ void System_Resource_Init(void)
 void System_Tasks_Init(void)
 { 
   /* Syetem Service init --------------*/
-  Service_Devices_Init();
+	System_Resource_Init();
+	Service_Devices_Init();
   /* Applications Init ----------------*/
 
 }

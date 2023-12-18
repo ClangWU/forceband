@@ -15,7 +15,7 @@
 #include <FreeRTOS.h>
 #include <task.h>
 #include <queue.h>
-#include <stm32f1xx.h>
+#include "stm32g4xx_hal.h"
 #include <BSP.h>
 
 /* Macro Definitions ---------------------------------------------------------*/
@@ -61,7 +61,7 @@ extern QueueHandle_t  Referee_QueueHandle;
 /* Mutexes */
 /* Notifications */
 /* Other Resources -----------------------------------------------------------*/
-#define USART1_RX_BUFFER_SIZE 32
+#define USART1_RX_BUFFER_SIZE 64
 #define USART2_RX_BUFFER_SIZE 64
 #define USART3_RX_BUFFER_SIZE 128
 

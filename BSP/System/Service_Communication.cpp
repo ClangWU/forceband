@@ -16,7 +16,6 @@
 **/
 /* Includes ------------------------------------------------------------------*/
 #include "Service_Communication.h"
-#include <cstdint>
 
 /* Private define ------------------------------------------------------------*/
 
@@ -75,6 +74,25 @@ void Task_SendADC (void *arg)
 */
 
 uint32_t User_UART1_RxCpltCallback(uint8_t* Recv_Data, uint16_t ReceiveLen)
+{
+	static USART_COB Usart_RxCOB;
+	float force_sensor;
+	uint16_t _compare_1;
+	uint16_t _compare_2;
+	if (USART_RxPort!=NULL){
+		Usart_RxCOB.port_num=1;
+		Usart_RxCOB.len=ReceiveLen;
+		Usart_RxCOB.address=Recv_Data;
+		memcpy(&force_sensor,Usart_RxCOB.address,Usart_RxCOB.len);
+//		if(force_sensor >= 0.0f){
+			_compare_1 = mapFloatToUInt16(force_sensor);
+			__HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_1, _compare_1);
+			__HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_2, _compare_1);
+	}
+	return 0;
+}
+
+uint32_t User_UART2_RxCpltCallback(uint8_t* Recv_Data, uint16_t ReceiveLen)
 {
 	static USART_COB Usart_RxCOB;
 	float force_sensor;
