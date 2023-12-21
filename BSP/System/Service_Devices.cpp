@@ -38,6 +38,9 @@ float force_sensor;
 /* IMU & NUC & Other sensors */
 int16_t _pulse = 4000;
 int16_t _angle = 0;
+
+	char str[40];	
+
 /* Other boards */
 
 /* Function prototypes -------------------------------------------------------*/
@@ -230,21 +233,22 @@ void pulse_8(int force, int theta){
 * @return None.
 */
 void Service_Devices_Init(void)
-{
+{	
 	BaseType_t xreturn = xTaskCreate(Vibra_Task,	"Vibra_Task",	Normal_Stack_Size,   NULL,	PriorityHigh,	&Vibra_Handle);
-	xTaskCreate(Key_Task,   "Key_Task" ,    Tiny_Stack_Size,   NULL,   PriorityHigh,   &Key_Handle);
+	xTaskCreate(Key_Task,   "Key_Task" ,     Tiny_Stack_Size,   NULL,   PriorityHigh,   &Key_Handle);
 }
 
 void Key_Task(void *arg){
-	static uint16_t _buffer = 0;
-	float int_buffer = 0;
-	int _grip = 0x01;
-	int _start = 0x01;
+//	static uint16_t _buffer = 0;
+//	float int_buffer = 0;
+	uint16_t _grip = 0x01;
+	uint16_t _start = 0x01;
 	int _start_temp;
 	int _grip_temp;
 	PackToPCUnionDef _PackToPCUnion;
 	_PackToPCUnion.PackToPC.head = 0x44;
 	_PackToPCUnion.PackToPC.end  = 0x55;
+
 	for(;;)
 	{
 		_grip_temp = HAL_GPIO_ReadPin(key_grip_GPIO_Port, key_grip_Pin);
@@ -258,16 +262,21 @@ void Key_Task(void *arg){
 		_PackToPCUnion.PackToPC.start_cmd = _start;
 		_PackToPCUnion.PackToPC.grip_cmd = _grip;
 
-		HAL_UART_Transmit_DMA(&huart2, _PackToPCUnion.UsartData, sizeof(_PackToPCUnion.PackToPC));
+//		HAL_UART_Transmit_DMA(&huart1, _PackToPCUnion.UsartData, sizeof(_PackToPCUnion.PackToPC));
 
-		vTaskDelay(100 / portTICK_RATE_MS);
+		
+		sprintf(str, "%04d:Hello,world.\r\n", _start);		//将counter的值打印到str数组中
+//		HAL_UART_Transmit(&huart2,(unsigned char *)str, strlen(str), 50);	//串口发送函数
+//		HAL_UART_Transmit_DMA(&huart1, "666", 3);
+
+		vTaskDelay(500 / portTICK_RATE_MS);
 	}
 }
 
 
 void Vibra_Task(void *arg)
 {
-	USART_COB _buffer;
+//	USART_COB _buffer;
 //	xLastWakeTime_t = xTaskGetTickCount();
 	int add_flag = 1;
 	
@@ -305,7 +314,7 @@ void Vibra_Task(void *arg)
 //			if (_buffer.len == 4){
 //				memcpy(&force_sensor,_buffer.address,_buffer.len);
 				
-		vTaskDelay(500 / portTICK_RATE_MS);
+		vTaskDelay(50 / portTICK_RATE_MS);
 	}
 }
 

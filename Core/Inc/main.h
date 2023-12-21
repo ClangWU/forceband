@@ -70,8 +70,8 @@ void Error_Handler(void);
 typedef struct
 {
 	uint8_t head;
-	int start_cmd;
-	int grip_cmd;
+	uint16_t start_cmd;
+	uint16_t grip_cmd;
 	//int
 	uint8_t end;
 }PackToPC_Def;
@@ -79,7 +79,7 @@ typedef struct
 
 typedef union
 {
-	uint8_t UsartData[10];
+	uint8_t UsartData[6];
 	PackToPC_Def PackToPC;
 }PackToPCUnionDef;
 
@@ -92,8 +92,6 @@ typedef union
 #define TX2_GPIO_Port GPIOA
 #define RX2_Pin GPIO_PIN_3
 #define RX2_GPIO_Port GPIOA
-#define TX1_Pin GPIO_PIN_4
-#define TX1_GPIO_Port GPIOC
 #define M2_Pin GPIO_PIN_0
 #define M2_GPIO_Port GPIOB
 #define M1_Pin GPIO_PIN_1
@@ -112,8 +110,6 @@ typedef union
 #define key_start_GPIO_Port GPIOA
 #define M5_Pin GPIO_PIN_5
 #define M5_GPIO_Port GPIOB
-#define RX1_Pin GPIO_PIN_7
-#define RX1_GPIO_Port GPIOB
 #define key_grip_Pin GPIO_PIN_9
 #define key_grip_GPIO_Port GPIOB
 
