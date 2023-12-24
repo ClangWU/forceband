@@ -16,19 +16,20 @@
 **/
 /* Includes ------------------------------------------------------------------*/
 #include "Service_Communication.h"
+#include "main.h"
 
 /* Private define ------------------------------------------------------------*/
 
 
-uint16_t mapFloatToUInt16(float input) {
-    // 首先，确保输入值在0到5之间
-    if (input < 0.0f) {
-        return 5000;
-    } else if (input > 20.0f) {
-        return 20000;
-    }
-    return static_cast<uint16_t>((input * (20000.0f - 5000.0f) / 20.0f) + 5000.0f);
-}
+//uint16_t mapFloatToUInt16(float input) {
+//    // 首先，确保输入值在0到5之间
+//    if (input < 0.0f) {
+//        return 5000;
+//    } else if (input > 20.0f) {
+//        return 20000;
+//    }
+//    return static_cast<uint16_t>((input * (20000.0f - 5000.0f) / 20.0f) + 5000.0f);
+//}
 
 void Task_SendADC(void *arg);
 /**
@@ -94,19 +95,13 @@ uint32_t User_UART1_RxCpltCallback(uint8_t* Recv_Data, uint16_t ReceiveLen)
 
 uint32_t User_UART2_RxCpltCallback(uint8_t* Recv_Data, uint16_t ReceiveLen)
 {
-	static USART_COB Usart_RxCOB;
-	float force_sensor;
-	uint16_t _compare_1;
-	uint16_t _compare_2;
-	if (USART_RxPort!=NULL){
-		Usart_RxCOB.port_num=1;
-		Usart_RxCOB.len=ReceiveLen;
-		Usart_RxCOB.address=Recv_Data;
-		memcpy(&force_sensor,Usart_RxCOB.address,Usart_RxCOB.len);
-//		if(force_sensor >= 0.0f){
-			_compare_1 = mapFloatToUInt16(force_sensor);
-			__HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_1, _compare_1);
-			__HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_2, _compare_1);
+	static USART_COB NUC_COB;
+	if( NUC_QueueHandle != NULL )
+	{
+		NUC_COB.port_num = 2;
+		NUC_COB.len      = ReceiveLen;
+		NUC_COB.address  = Recv_Data;
+		xQueueSendFromISR(NUC_QueueHandle,&NUC_COB,0);
 	}
 	return 0;
 }

@@ -166,6 +166,261 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+uint16_t mapFloatToUInt16(float input) {
+    if (input < 0.0f) {
+        return 2500;
+    } else if (input > 20.0f) {
+        return 4199;
+    }
+    return (uint16_t)(((uint32_t)input * (4199.0f - 2500.0f) / 20.0f) + 2500.0f);
+}
+void cal_pulse_interpolated(int force, int theta){
+	//1- get theta
+	//2- classify
+	//3- calpulse
+	if(0<= theta && theta < 45)
+		pulse_1(force, theta);
+	else if(45<= theta && theta < 90)
+		pulse_2(force, theta);
+	else if(90<= theta && theta < 135)
+		pulse_3(force, theta);
+	else if(135<= theta && theta < 180)
+		pulse_4(force, theta);
+	else if(180<= theta && theta < 225)
+		pulse_5(force, theta);
+	else if(225<= theta && theta < 270)
+		pulse_6(force, theta);
+	else if(270<= theta && theta < 315)
+		pulse_7(force, theta);
+	else // 315< theta < 360
+		pulse_8(force, theta);
+}
+void pulse_1(int force, int theta){
+//	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, 0);//1
+//	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_3, 0);//2
+	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 0);//3
+	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);//4
+	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, 0);//5
+	__HAL_TIM_SET_COMPARE(&htim15, TIM_CHANNEL_2, 0);//6
+	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 0);//7
+	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 0);//8
+	
+	uint16_t _compare_1;
+	uint16_t _compare_2;
+	float f_diag = (float)force * sin(ang2rad(theta)) / 0.707;
+	float f_orth = (float)force * cos(ang2rad(theta)) - f_diag * 0.707;
+	_compare_1 = mapFloatToUInt16(f_diag);
+	_compare_2 = mapFloatToUInt16(f_orth);
+	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, _compare_2);//1
+	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_3, _compare_1);//2
+}
+void pulse_2(int force, int theta){
+	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, 0);//1
+//	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_3, 0);//2
+//	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 0);//3
+	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);//4
+	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, 0);//5
+	__HAL_TIM_SET_COMPARE(&htim15, TIM_CHANNEL_2, 0);//6
+	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 0);//7
+	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 0);//8
+	
+	uint16_t _compare_1;
+	uint16_t _compare_2;
+	float f_diag = (float)force * cos(ang2rad(theta)) / 0.707;
+	float f_orth = (float)force * sin(ang2rad(theta)) - f_diag * 0.707;
+	_compare_1 = mapFloatToUInt16(f_diag);
+	_compare_2 = mapFloatToUInt16(f_orth);
+	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_3, _compare_1);//2
+	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, _compare_2);//3
+}
+void pulse_3(int force, int theta){
+	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, 0);//1
+	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_3, 0);//2
+//	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 0);//3
+//	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);//4
+	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, 0);//5
+	__HAL_TIM_SET_COMPARE(&htim15, TIM_CHANNEL_2, 0);//6
+	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 0);//7
+	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 0);//8
+	
+	uint16_t _compare_1;
+	uint16_t _compare_2;
+	float f_diag = -(float)force * cos(ang2rad(theta)) / 0.707;
+	float f_orth = (float)force * sin(ang2rad(theta)) - f_diag * 0.707;
+	_compare_1 = mapFloatToUInt16(f_diag);
+	_compare_2 = mapFloatToUInt16(f_orth);
+	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, _compare_1);//3
+	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, _compare_2);//4
+}
+void pulse_4(int force, int theta){
+	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, 0);//1
+	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_3, 0);//2
+	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 0);//3
+//	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);//4
+//	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, 0);//5
+	__HAL_TIM_SET_COMPARE(&htim15, TIM_CHANNEL_2, 0);//6
+	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 0);//7
+	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 0);//8
+	
+	uint16_t _compare_1;
+	uint16_t _compare_2;
+	float f_diag = (float)force * sin(ang2rad(theta)) / 0.707;
+	float f_orth = -(float)force * cos(ang2rad(theta)) - f_diag * 0.707;
+	_compare_1 = mapFloatToUInt16(f_diag);
+	_compare_2 = mapFloatToUInt16(f_orth);
+	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, _compare_1);//4
+	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, _compare_2);//5
+}
+void pulse_5(int force, int theta){
+	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, 0);//1
+	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_3, 0);//2
+	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 0);//3
+	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);//4
+//	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, 0);//5
+//	__HAL_TIM_SET_COMPARE(&htim15, TIM_CHANNEL_2, 0);//6
+	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 0);//7
+	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 0);//8	
+
+	uint16_t _compare_1;
+	uint16_t _compare_2;
+	float f_diag = -(float)force * sin(ang2rad(theta)) / 0.707;
+	float f_orth = -(float)force * cos(ang2rad(theta)) - f_diag * 0.707;
+	_compare_1 = mapFloatToUInt16(f_diag);
+	_compare_2 = mapFloatToUInt16(f_orth);
+	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, _compare_1);//5
+	__HAL_TIM_SET_COMPARE(&htim15, TIM_CHANNEL_2, _compare_2);//6
+}
+void pulse_6(int force, int theta){
+	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, 0);//1
+	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_3, 0);//2
+	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 0);//3
+	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);//4
+	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, 0);//5
+//	__HAL_TIM_SET_COMPARE(&htim15, TIM_CHANNEL_2, 0);//6
+//	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 0);//7
+	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 0);//8
+	
+	uint16_t _compare_1;
+	uint16_t _compare_2;
+	float f_diag = -(float)force * cos(ang2rad(theta)) / 0.707;
+	float f_orth = -(float)force * sin(ang2rad(theta)) - f_diag * 0.707;
+	_compare_1 = mapFloatToUInt16(f_diag);
+	_compare_2 = mapFloatToUInt16(f_orth);
+	__HAL_TIM_SET_COMPARE(&htim15, TIM_CHANNEL_2, _compare_1);//6
+	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, _compare_2);//7
+}
+void pulse_7(int force, int theta){
+	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, 0);//1
+	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_3, 0);//2
+	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 0);//3
+	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);//4
+	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, 0);//5
+	__HAL_TIM_SET_COMPARE(&htim15, TIM_CHANNEL_2, 0);//6
+//	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 0);//7
+//	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 0);//8
+	
+	uint16_t _compare_1;
+	uint16_t _compare_2;
+	float f_diag = (float)force * cos(ang2rad(theta)) / 0.707;
+	float f_orth = -(float)force * sin(ang2rad(theta)) - f_diag * 0.707;
+	_compare_1 = mapFloatToUInt16(f_diag);
+	_compare_2 = mapFloatToUInt16(f_orth);
+	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, _compare_1);//7
+	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, _compare_2);//8
+	
+}
+void pulse_8(int force, int theta){
+//	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, 0);//1
+	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_3, 0);//2
+	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 0);//3
+	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);//4
+	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, 0);//5
+	__HAL_TIM_SET_COMPARE(&htim15, TIM_CHANNEL_2, 0);//6
+	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 0);//7
+//	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 0);//8
+	
+	uint16_t _compare_1;
+	uint16_t _compare_2;
+	float f_diag = -(float)force * sin(ang2rad(theta)) / 0.707;
+	float f_orth = (float)force * cos(ang2rad(theta)) - f_diag * 0.707;
+	_compare_1 = mapFloatToUInt16(f_diag);
+	_compare_2 = mapFloatToUInt16(f_orth);
+	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, _compare_1);//8
+	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, _compare_2);//1
+}
+
+void cal_pulse_single(float force, int theta) {
+    if (theta < 0 || theta > 360) {
+        printf("Error: Invalid theta value\n");
+        return;
+    }
+    int motorNumber = (int)((theta - 15 + 30) / 30) % 12;
+	any_pulse(force, motorNumber);
+}
+
+void any_pulse(float force, int num){
+	uint16_t _compare;
+	_compare = mapFloatToUInt16(force);
+	if (num < 0 || num > 12) {
+        // 处理无效的 num 值
+        printf("Error: Invalid motor number\n");
+        return;
+    }
+	switch (num){
+		case 0:
+			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, _compare);//1
+			break;
+		case 1:
+			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_3, _compare);//2
+			break;
+		case 2:
+			__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, _compare);//3
+			break;
+		case 3:
+			__HAL_TIM_SET_COMPARE(&htim15, TIM_CHANNEL_2, _compare);//4
+			break;
+		case 4:
+			__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, _compare);//5
+			break;
+		case 5:
+			__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, _compare);//6
+			break;
+		case 6:
+			__HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_1, _compare);//7
+			break;
+		case 7:
+			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, _compare);//8
+			break;
+		case 8:
+			__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, _compare);//9
+			break;
+		case 9:
+			__HAL_TIM_SET_COMPARE(&htim15, TIM_CHANNEL_4, _compare);//10
+			break;
+		case 10:
+			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_4, _compare);//11
+			break;
+		case 11:
+			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, _compare);//12
+			break;
+		
+	}
+}
+//clang
+//			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, _compare);//1
+//			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_3, _compare);//2
+//			__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, _compare);//3
+//			__HAL_TIM_SET_COMPARE(&htim15, TIM_CHANNEL_2, _compare);//4
+//			__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, _compare);//5
+//			__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, _compare);//6
+//			__HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_1, _compare);//7
+//			__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, _compare);//8
+//			__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, _compare);//9
+//			__HAL_TIM_SET_COMPARE(&htim15, TIM_CHANNEL_4, _compare);//10
+//			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_4, _compare);//11
+//			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, _compare);//12
+
+
 
 /* USER CODE END 4 */
 

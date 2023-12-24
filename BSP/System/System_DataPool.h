@@ -71,6 +71,12 @@ extern uint8_t Uart2_Rx_Buff[USART2_RX_BUFFER_SIZE];
 extern uint8_t Uart3_Rx_Buff[USART3_RX_BUFFER_SIZE];
 
 
+typedef struct NUCComRx_Typedef
+{
+	float _force_y;
+	float _force_z;
+}_NUCComRx;
+
 //暂时被遗忘在这,统一标准接口制定后再集中回收
 #ifndef __UUCOBTypeDef_DEFINED
 #define __UUCOBTypeDef_DEFINED

@@ -8,7 +8,7 @@
 #define  _SERVICE_COMMUNICATE_H_
 
 #include "System_DataPool.h"
-#include "main.h"
+
 #ifdef  __cplusplus
 extern "C"{
 #endif

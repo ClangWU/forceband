@@ -40,7 +40,7 @@ void System_Resource_Init(void)
 
   /* RTOS resources Init --------------*/
 	//Receive Force Sensor Data
-	USART_RxPort       = xQueueCreate(2,sizeof(USART_COB));
+	NUC_QueueHandle       = xQueueCreate(2,sizeof(USART_COB));
   /* Other resources Init -------------*/
 	//Vibra Motor
 	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_3);

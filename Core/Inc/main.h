@@ -70,16 +70,15 @@ void Error_Handler(void);
 typedef struct
 {
 	uint8_t head;
-	uint16_t start_cmd;
-	uint16_t grip_cmd;
-	//int
+	int start_cmd;
+	int grip_cmd;
 	uint8_t end;
 }PackToPC_Def;
 #pragma pack()
 
 typedef union
 {
-	uint8_t UsartData[6];
+	uint8_t UsartData[10];
 	PackToPC_Def PackToPC;
 }PackToPCUnionDef;
 
@@ -122,8 +121,11 @@ void pulse_5(int force, int theta);
 void pulse_6(int force, int theta);
 void pulse_7(int force, int theta);
 void pulse_8(int force, int theta);
-void cal_pulse(int force, int theta);
-uint16_t mapFloatToUInt16(double input);
+void cal_pulse_interpolated(int force, int theta);
+void cal_pulse_single(float force, int theta);
+uint16_t mapFloatToUInt16(float input);
+void any_pulse(float force, int num); 
+
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
