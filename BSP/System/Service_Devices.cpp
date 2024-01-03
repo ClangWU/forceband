@@ -172,14 +172,20 @@ void Vibra_Task(void *arg)
 	int8_t longBuff[0x08];
 
 	int add_flag = 1;
-	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, 0);//1
-	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_3, 0);//2
-	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 0);//3
-	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);//4
-	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, 0);//5
-	__HAL_TIM_SET_COMPARE(&htim15, TIM_CHANNEL_2, 0);//6
-	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 0);//7
-	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 0);//8
+	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, 0);//12
+	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_3, 0);//1
+	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 0);//2
+	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 0);//3
+	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, 0);//4
+	__HAL_TIM_SET_COMPARE(&htim15, TIM_CHANNEL_2, 0);//5
+	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 0);//6
+	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 0);//7
+	
+	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 0);//8
+	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 0);//9
+	__HAL_TIM_SET_COMPARE(&htim15, TIM_CHANNEL_4, 0);//10
+	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_4, 0);//11
+
 	for(;;)
 	{
 		if (xQueueReceive(NUC_QueueHandle, &_buffer, _xTicksToWait) == pdTRUE)
@@ -198,6 +204,8 @@ void Vibra_Task(void *arg)
 			else if(_buffer.len == 0x08){
 				memcpy(longBuff, _buffer.address, _buffer.len);
 				memcpy(&NUCComRxData, longBuff, 8);//收2个 即为2*4个字节
+				
+				cal_pulse_single(NUCComRxData._force, NUCComRxData._theta);
 			}
 		}		
 		vTaskDelayUntil(&xLastWakeTime_t,1);

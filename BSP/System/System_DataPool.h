@@ -73,8 +73,8 @@ extern uint8_t Uart3_Rx_Buff[USART3_RX_BUFFER_SIZE];
 
 typedef struct NUCComRx_Typedef
 {
-	float _force_y;
-	float _force_z;
+	float _force;
+	float _theta;
 }_NUCComRx;
 
 //暂时被遗忘在这,统一标准接口制定后再集中回收

@@ -122,7 +122,7 @@ void pulse_6(int force, int theta);
 void pulse_7(int force, int theta);
 void pulse_8(int force, int theta);
 void cal_pulse_interpolated(int force, int theta);
-void cal_pulse_single(float force, int theta);
+void cal_pulse_single(float force, float theta);
 uint16_t mapFloatToUInt16(float input);
 void any_pulse(float force, int num); 
 

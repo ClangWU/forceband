@@ -349,12 +349,12 @@ void pulse_8(int force, int theta){
 	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, _compare_2);//1
 }
 
-void cal_pulse_single(float force, int theta) {
-    if (theta < 0 || theta > 360) {
+void cal_pulse_single(float force, float theta) {
+    if (theta < 0.0f || theta > 360.0f) {
         printf("Error: Invalid theta value\n");
         return;
     }
-    int motorNumber = (int)((theta - 15 + 30) / 30) % 12;
+    int motorNumber = (int)(((int)theta - 15 + 30) / 30) % 12;
 	any_pulse(force, motorNumber);
 }
 
