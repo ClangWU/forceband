@@ -96,12 +96,17 @@ uint32_t User_UART1_RxCpltCallback(uint8_t* Recv_Data, uint16_t ReceiveLen)
 uint32_t User_UART2_RxCpltCallback(uint8_t* Recv_Data, uint16_t ReceiveLen)
 {
 	static USART_COB NUC_COB;
+	int8_t longBuff[0x08] = {0};
+
 	if( NUC_QueueHandle != NULL )
 	{
 		NUC_COB.port_num = 2;
 		NUC_COB.len      = ReceiveLen;
 		NUC_COB.address  = Recv_Data;
-		xQueueSendFromISR(NUC_QueueHandle,&NUC_COB,0);
+		if(NUC_COB.len == 0x08){
+			memcpy(longBuff, NUC_COB.address, NUC_COB.len);
+			memcpy(&NUCComRxData, longBuff, 0x08);//收2个 即为2*4个字节
+		}	
 	}
 	return 0;
 }

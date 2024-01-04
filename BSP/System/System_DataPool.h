@@ -77,6 +77,9 @@ typedef struct NUCComRx_Typedef
 	float _theta;
 }_NUCComRx;
 
+extern _NUCComRx NUCComRxData;
+
+
 //暂时被遗忘在这,统一标准接口制定后再集中回收
 #ifndef __UUCOBTypeDef_DEFINED
 #define __UUCOBTypeDef_DEFINED
